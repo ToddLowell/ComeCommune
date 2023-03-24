@@ -1,6 +1,6 @@
 import React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import Layout from '../components/layout.js';
 
 export default () => {
@@ -8,9 +8,11 @@ export default () => {
     {
       image: file(relativePath: { eq: "profile_pic.jpg" }) {
         sharp: childImageSharp {
-          fluid {
-            ...GatsbyImageSharpFluid_withWebp
-          }
+          gatsbyImageData(
+            layout: FULL_WIDTH
+            placeholder: BLURRED
+            formats: [AUTO, WEBP]
+          )
         }
       }
     }
@@ -59,7 +61,7 @@ export default () => {
               </p>
             </div>
             <div className="about-me__photo">
-              <Img fluid={image.sharp.fluid} alt="Brendan Low" />
+              <GatsbyImage image={image.sharp.gatsbyImageData} alt="Brendan Low" />
             </div>
           </div>
           <div className="contributions">

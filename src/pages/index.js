@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, graphql, useStaticQuery } from 'gatsby';
-import BackgroundImage from 'gatsby-background-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import Layout from '../components/layout.js';
 import PostPreview from '../components/post-preview-main-page.js';
 import usePosts from '../hooks/use-posts.js';
@@ -10,9 +10,11 @@ export default () => {
     {
       image: file(relativePath: { eq: "hero.jpg" }) {
         sharp: childImageSharp {
-          fluid(maxWidth: 1605, quality: 100) {
-            ...GatsbyImageSharpFluid_withWebp
-          }
+          gatsbyImageData(
+            layout: FULL_WIDTH
+            placeholder: BLURRED
+            formats: [AUTO, WEBP]
+          )
         }
       }
     }
@@ -24,7 +26,8 @@ export default () => {
 
   return (
     <Layout>
-      <BackgroundImage Tag="header" fluid={image.sharp.fluid} className="header">
+        <div className="header">
+        <GatsbyImage image={image.sharp.gatsbyImageData} className="header__image" alt={"testimage"}/>
         <div className="header__text-box">
           <h1 className="heading__primary">
             <span className="heading__primary--main">Come</span>
@@ -34,7 +37,7 @@ export default () => {
             <span className="heading__primary--subtext">by Brendan Low</span>
           </h1>
         </div>
-      </BackgroundImage>
+        </div>
 
       <section className="article--preview__container">
         <div className="container">

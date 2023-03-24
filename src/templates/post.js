@@ -2,7 +2,7 @@ import React from 'react';
 import Helmet from 'react-helmet';
 import { Link, graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import Layout from '../components/layout.js';
 import { css } from '@emotion/react';
 import { Disqus } from 'gatsby-plugin-disqus';
@@ -20,8 +20,12 @@ export const query = graphql`
               src
               presentationWidth
               presentationHeight
-              ...GatsbyImageSharpFluid_withWebp
             }
+            gatsbyImageData(
+              layout: FULL_WIDTH
+              placeholder: BLURRED
+              formats: [AUTO, WEBP]
+            )
           }
         }
         image_alt
@@ -106,7 +110,7 @@ const PostTemplate = ({ /*pageContext,*/ data: { mdx: post, prev: prev_post, nex
           </p>
           {(() => {
             if (post.frontmatter.image) {
-              return <Img fluid={post.frontmatter.image.sharp.fluid} alt={post.frontmatter.image_alt || ''} />;
+              return <GatsbyImage image={post.frontmatter.image.sharp.gatsbyImageData} alt={post.frontmatter.image_alt || ''} />;
             }
           })()}
           {(() => {

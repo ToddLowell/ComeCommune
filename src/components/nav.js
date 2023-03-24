@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, graphql, useStaticQuery } from 'gatsby';
-import Img from 'gatsby-image';
+import { GatsbyImage } from 'gatsby-plugin-image';
 import { css } from '@emotion/react';
 
 const Navbar = () => {
@@ -11,9 +11,11 @@ const Navbar = () => {
     {
       image: file(relativePath: { eq: "logo-white.png" }) {
         sharp: childImageSharp {
-          fluid {
-            ...GatsbyImageSharpFluid_withWebp
-          }
+          gatsbyImageData(
+            layout: FULL_WIDTH
+            placeholder: BLURRED
+            formats: [AUTO, WEBP]
+          )
         }
       }
     }
@@ -33,7 +35,7 @@ const Navbar = () => {
     <div className={isOpen ? 'navbar opened' : 'navbar'}>
       <nav className="nav-container container">
         <Link to="/" className="logo navbar__home">
-          <Img fluid={image.sharp.fluid} alt="logo" className="navbar__home--icon" />
+          <GatsbyImage image={image.sharp.gatsbyImageData} alt="logo" className="navbar__home--icon" />
           <span className="navbar__home--text">
             <span className="color-grey">Come</span>Commune
           </span>
