@@ -1,0 +1,27 @@
+@use 'mixins' as *;
+
+.center {
+  @include absCenter;
+}
+
+.center-image {
+  display: block;
+  margin: 0 auto;
+  width: 50%;
+
+  @include respond(phone) {
+    width: 90%;
+  }
+}
+
+.align-center {
+  text-align: center;
+}
+
+.click {
+  cursor: pointer;
+}
+
+.pd-bt-sm {
+  padding-bottom: 2rem;
+}
