@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Link, graphql, useStaticQuery } from 'gatsby';
-import { GatsbyImage } from 'gatsby-plugin-image';
-import { css } from '@emotion/react';
+import React, { useEffect, useState } from 'react'
+import { Link, graphql, useStaticQuery } from 'gatsby'
+import { GatsbyImage } from 'gatsby-plugin-image'
+import { css } from '@emotion/react'
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(!isOpen);
+  const [isOpen, setIsOpen] = useState(false)
+  const toggle = () => setIsOpen(!isOpen)
 
   const { image } = useStaticQuery(graphql`
     {
@@ -19,17 +19,17 @@ const Navbar = () => {
         }
       }
     }
-  `);
+  `)
 
   useEffect(() => {
     // hardcode different style for index page
-    const nav = document.querySelector('.navbar');
+    const nav = document.querySelector('.navbar')
 
     if (window.location.pathname === '/') {
-      nav.style.backgroundColor = 'transparent';
-      nav.style.position = 'absolute';
+      nav.style.backgroundColor = 'transparent'
+      nav.style.position = 'absolute'
     }
-  });
+  })
 
   return (
     <div className={isOpen ? 'navbar opened' : 'navbar'}>
@@ -99,7 +99,7 @@ const Navbar = () => {
         </div>
       </nav>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

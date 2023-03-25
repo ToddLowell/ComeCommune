@@ -7,8 +7,6 @@
 .about-me {
   display: flex;
   justify-content: space-between;
-  padding-bottom: 5rem;
-  border-bottom: 5px solid var(--color-primary);
 
   @include respond(tab-port) {
     padding: 0 2rem;
@@ -54,8 +52,10 @@
 
 // contributions
 .contributions {
-  margin-top: 2rem;
+  margin-top: 5rem;
   margin-bottom: 2rem;
+  padding-top: 2rem;
+  border-top: 5px solid var(--color-primary);
 
   @include respond(tab-port) {
     padding: 0 2rem;

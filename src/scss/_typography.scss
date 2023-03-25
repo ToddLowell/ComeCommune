@@ -134,6 +134,12 @@ footer {
 .paragraph {
   &--article {
     text-align: justify;
+    padding-bottom: 3rem;
+    border-bottom: 5px solid var(--color-primary);
+
+    @include respond(phone) {
+      padding-bottom: 2.5rem;
+    }
 
     @include respond(tab-port) {
       padding: 0 2rem;
@@ -141,15 +147,6 @@ footer {
     & h2 {
       font-size: 1.8rem;
       color: var(--color-primary);
-    }
-
-    &:last-of-type {
-      padding-bottom: 3rem;
-      border-bottom: 5px solid var(--color-primary);
-
-      @include respond(phone) {
-        padding-bottom: 2.5rem;
-      }
     }
 
     & a:link,

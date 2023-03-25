@@ -1,5 +1,5 @@
-import React, { useReducer } from 'react';
-import { css } from '@emotion/react';
+import React, { useReducer } from 'react'
+import { css } from '@emotion/react'
 
 const INITIAL_STATE = {
   name: '',
@@ -7,66 +7,66 @@ const INITIAL_STATE = {
   newsletter: false,
   subject: '',
   message: '',
-  status: 'IDLE',
-};
+  status: 'IDLE'
+}
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'updateField':
-      return { ...state, [action.field]: action.value };
+      return { ...state, [action.field]: action.value }
 
     case 'updateStatus':
-      return { ...state, status: action.status };
+      return { ...state, status: action.status }
 
     case 'reset':
     default:
-      return INITIAL_STATE;
+      return INITIAL_STATE
   }
-};
+}
 
 const Form = () => {
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
 
   const setStatus = (status) =>
     dispatch({
       type: 'updateStatus',
-      status,
-    });
+      status
+    })
 
   const updateFieldValue = (field) => (e) => {
-    let value;
-    if (field === 'newsletter') value = e.target.checked;
-    else value = e.target.value;
+    let value
+    if (field === 'newsletter') value = e.target.checked
+    else value = e.target.value
 
     dispatch({
       type: 'updateField',
       field,
-      value,
-    });
-  };
+      value
+    })
+  }
 
   const submitForm = (e) => {
-    e.preventDefault();
-    setStatus('PENDING');
+    e.preventDefault()
+    setStatus('PENDING')
 
     fetch('/api/contact', {
       method: 'POST',
-      body: JSON.stringify(state),
+      body: JSON.stringify(state)
     })
       .then((res) => {
-        if (!res.ok) throw Error(res.statusText);
+        if (!res.ok) throw Error(res.statusText)
 
-        return res.json();
+        return res.json()
       })
       .then((res) => {
         // console.log(res);
-        setStatus('SUCCESS');
+        setStatus('SUCCESS')
       })
-      .catch((err) => {
+      .catch((_err) => {
         // console.error(err);
-        setStatus('ERROR');
-      });
-  };
+        setStatus('ERROR')
+      })
+  }
 
   if (state.status === 'SUCCESS') {
     return (
@@ -122,7 +122,7 @@ const Form = () => {
           Reset
         </button>
       </>
-    );
+    )
   }
 
   return (
@@ -212,7 +212,7 @@ const Form = () => {
         <input type="submit" value="Send" />
       </form>
     </>
-  );
-};
+  )
+}
 
-export default Form;
+export default Form
