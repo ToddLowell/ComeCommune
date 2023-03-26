@@ -1,39 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { Link, graphql, useStaticQuery } from 'gatsby';
-import Img from 'gatsby-image';
-import { css } from '@emotion/react';
+import React, { useEffect, useState } from 'react'
+import { Link, graphql, useStaticQuery } from 'gatsby'
+import { GatsbyImage } from 'gatsby-plugin-image'
+import { css } from '@emotion/react'
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(!isOpen);
+  const [isOpen, setIsOpen] = useState(false)
+  const toggle = () => setIsOpen(!isOpen)
 
   const { image } = useStaticQuery(graphql`
     {
       image: file(relativePath: { eq: "logo-white.png" }) {
         sharp: childImageSharp {
-          fluid {
-            ...GatsbyImageSharpFluid_withWebp
-          }
+          gatsbyImageData(
+            layout: FULL_WIDTH
+            placeholder: BLURRED
+            formats: [AUTO, WEBP]
+          )
         }
       }
     }
-  `);
+  `)
 
   useEffect(() => {
     // hardcode different style for index page
-    const nav = document.querySelector('.navbar');
+    const nav = document.querySelector('.navbar')
 
     if (window.location.pathname === '/') {
-      nav.style.backgroundColor = 'transparent';
-      nav.style.position = 'absolute';
+      nav.style.backgroundColor = 'transparent'
+      nav.style.position = 'absolute'
     }
-  });
+  })
 
   return (
     <div className={isOpen ? 'navbar opened' : 'navbar'}>
       <nav className="nav-container container">
         <Link to="/" className="logo navbar__home">
-          <Img fluid={image.sharp.fluid} alt="logo" className="navbar__home--icon" />
+          <GatsbyImage image={image.sharp.gatsbyImageData} alt="logo" className="navbar__home--icon" />
           <span className="navbar__home--text">
             <span className="color-grey">Come</span>Commune
           </span>
@@ -97,7 +99,7 @@ const Navbar = () => {
         </div>
       </nav>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

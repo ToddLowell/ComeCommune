@@ -1,100 +1,95 @@
-import React from 'react';
-import Helmet from 'react-helmet';
-import { Link, graphql } from 'gatsby';
-import { MDXRenderer } from 'gatsby-plugin-mdx';
-import Img from 'gatsby-image';
-import Layout from '../components/layout.js';
-import { css } from '@emotion/react';
-import { Disqus } from 'gatsby-plugin-disqus';
+import React from 'react'
+import Helmet from 'react-helmet'
+import { Link, graphql } from 'gatsby'
+import { GatsbyImage } from 'gatsby-plugin-image'
+import Layout from '../components/layout.js'
+import { css } from '@emotion/react'
+import { Disqus } from 'gatsby-plugin-disqus'
+import { BLOCKS } from '@contentful/rich-text-types'
+import { documentToPlainTextString } from '@contentful/rich-text-plain-text-renderer'
+import { renderRichText } from 'gatsby-source-contentful/rich-text'
 
-export const query = graphql`
-  query($title: String!, $title_prev: String!, $title_next: String!) {
-    mdx(frontmatter: { title: { eq: $title } }) {
-      frontmatter {
-        path
+export const pageQuery = graphql`
+  query ArticlesBySlug(
+    $slug: String!
+    $previousPostSlug: String
+    $nextPostSlug: String
+  ) {
+    contentfulArticles(slug: { eq: $slug }) {
+      slug
+      title
+      publishDate(formatString: "MMMM Do, YYYY")
+      imageCredit
+      image {
         title
-        date
-        image {
-          sharp: childImageSharp {
-            fluid {
-              src
-              presentationWidth
-              presentationHeight
-              ...GatsbyImageSharpFluid_withWebp
-            }
+        gatsbyImageData
+        width
+        height
+        url
+      }
+      article {
+        raw
+        references {
+          ... on ContentfulAsset {
+            contentful_id
+            __typename
+            title
+            gatsbyImageData
           }
         }
-        image_alt
-        image_credit
-      }
-      body
-      excerpt(pruneLength: 260)
-    }
-    prev: mdx(frontmatter: { title: { eq: $title_prev } }) {
-      frontmatter {
-        path
-        title
       }
     }
-    next: mdx(frontmatter: { title: { eq: $title_next } }) {
-      frontmatter {
-        path
-        title
+    prevPost: contentfulArticles(slug: { eq: $previousPostSlug }) {
+      slug
+      title
+    }
+    nextPost: contentfulArticles(slug: { eq: $nextPostSlug }) {
+      slug
+      title
+    }
+  }
+`
+
+const PostTemplate = ({ data: { contentfulArticles: { article, image, imageCredit, publishDate, slug, title }, nextPost, prevPost } }) => {
+  const disqusConfig = {
+    url: `https://comecommune.netlify.app/articles/${slug}`,
+    identifier: slug,
+    title
+  }
+
+  const options = {
+    renderNode: {
+      [BLOCKS.EMBEDDED_ASSET]: node => {
+        const { gatsbyImageData, title } = node.data.target
+        if (!gatsbyImageData) {
+          // asset is not an image
+          return null
+        }
+
+        return <GatsbyImage image={gatsbyImageData} alt={title} className="center-image" />
       }
     }
   }
-`;
 
-const PostTemplate = ({ /*pageContext,*/ data: { mdx: post, prev: prev_post, next: next_post } }) => {
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  const dateRaw = new Date(post.frontmatter.date);
-  const date = `${months[dateRaw.getMonth()]} ${dateRaw.getDate()}, ${dateRaw.getFullYear()}`;
-
-  const disqusConfig = {
-    url: `https://comecommune.netlify.app/articles/${post.frontmatter.path}`,
-    identifier: post.frontmatter.path,
-    title: post.frontmatter.title,
-  };
+  const excerpt = documentToPlainTextString(JSON.parse(article.raw)).slice(0, 250) + '...'
 
   return (
     <Layout>
       <Helmet>
-        <title>{post.frontmatter.title} | ComeCommune</title>
+        <title>{title} | ComeCommune</title>
+        <meta name="description" content={excerpt} />
 
         {/* OpenGraph */}
-        <meta property="og:title" content={post.frontmatter.title} />
-        <meta property="og:description" content={post.excerpt} />
-        <meta property="og:url" content={'https://comecommune.netlify.app/articles/' + post.frontmatter.path + '/'} />
-        {post.frontmatter.image && (
-          <meta
-            property="og:image"
-            content={'https://comecommune.netlify.app' + post.frontmatter.image.sharp.fluid.src}
-          />
-        )}
-        {post.frontmatter.image && (
-          <meta property="og:image:width" content={post.frontmatter.image.sharp.fluid.presentationWidth} />
-        )}
-        {post.frontmatter.image && (
-          <meta property="og:image:height" content={post.frontmatter.image.sharp.fluid.presentationHeight} />
-        )}
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={excerpt} />
+        <meta property="og:url" content={'https://comecommune.netlify.app/articles/' + slug + '/'} />
+        {image && (<meta property="og:image" content={image.url} />)}
+        {image && (<meta property="og:image:width" content={image.width} />)}
+        {image && (<meta property="og:image:height" content={image.height} />)}
       </Helmet>
-      {/* <pre>{JSON.stringify(pageContext, null, 2)}</pre> */}
       <section className="article">
         <article className="container">
-          <h1 className="heading__tertiary">{post.frontmatter.title}</h1>
+          <h1 className="heading__tertiary">{title}</h1>
           <p
             className="paragraph"
             css={css`
@@ -102,34 +97,22 @@ const PostTemplate = ({ /*pageContext,*/ data: { mdx: post, prev: prev_post, nex
             `}
           >
             <i className="icofont-clock-time"></i>
-            {date}
+            {publishDate}
           </p>
-          {(() => {
-            if (post.frontmatter.image) {
-              return <Img fluid={post.frontmatter.image.sharp.fluid} alt={post.frontmatter.image_alt || ''} />;
-            }
-          })()}
-          {(() => {
-            if (post.frontmatter.image_credit) {
-              return (
-                <p
-                  className="paragraph"
-                  css={css`
-                    margin-top: 0.5rem;
-                  `}
-                >
-                  (Photo Credit: {post.frontmatter.image_credit})
-                </p>
-              );
-            }
-          })()}
-          <p
+          {image && (<GatsbyImage image={image.gatsbyImageData} alt={image.title || ''} />)}
+          {image && imageCredit && (
+            <p
+              className="paragraph"
+              css={css`
+                margin-top: 0.5rem;
+              `}
+            >
+              {imageCredit}
+            </p>
+          )}
+          <div
             className="paragraph--article"
             css={css`
-              ///////////
-              // table //
-              ///////////
-
               blockquote {
                 padding-left: 4rem;
               }
@@ -140,16 +123,11 @@ const PostTemplate = ({ /*pageContext,*/ data: { mdx: post, prev: prev_post, nex
                 justify-content: center;
                 margin: 2rem 0;
 
-                & td,
-                th {
+                & td, th {
                   border: 1px solid #ddd;
                   border-width: 1px 0 1px 0;
                   text-align: left;
                   padding: 8px;
-                }
-
-                & th {
-                  border-top: none;
                 }
 
                 & tr:nth-of-type(even) {
@@ -158,8 +136,8 @@ const PostTemplate = ({ /*pageContext,*/ data: { mdx: post, prev: prev_post, nex
               }
             `}
           >
-            <MDXRenderer>{post.body}</MDXRenderer>
-          </p>
+            {renderRichText(article, options)}
+          </div>
 
           {/* Disqus */}
           <Disqus config={disqusConfig} />
@@ -168,47 +146,41 @@ const PostTemplate = ({ /*pageContext,*/ data: { mdx: post, prev: prev_post, nex
             className="selector"
             css={css`
               * + * {
-                margin-top: 0;
+                margin-top: 0 !important;
               }
             `}
           >
-            {(() => {
-              if (prev_post) {
-                return (
+            {prevPost && (
                   <div className="selector__prev">
                     <i className="icofont-rounded-left"></i>
                     <div>
                       <h4>Previous Article</h4>
-                      <h3 className="heading__tertiary">{prev_post.frontmatter.title}</h3>
-                      <Link to={`/articles/${prev_post.frontmatter.path}`} className="selector__prev--btn">
+                      <h3 className="heading__tertiary">{prevPost.title}</h3>
+                      <Link to={`/articles/${prevPost.slug}`} className="selector__prev--btn">
                         Read More
                       </Link>
                     </div>
                   </div>
-                );
-              }
-            })()}
-            {(() => {
-              if (next_post) {
-                return (
+            )
+            }
+            {nextPost && (
                   <div className="selector__next">
                     <div>
                       <h4>Next Article</h4>
-                      <h3 className="heading__tertiary">{next_post.frontmatter.title}</h3>
-                      <Link to={`/articles/${next_post.frontmatter.path}`} className="selector__next--btn">
+                      <h3 className="heading__tertiary">{nextPost.title}</h3>
+                      <Link to={`/articles/${nextPost.slug}`} className="selector__next--btn">
                         Read More
                       </Link>
                     </div>
                     <i className="icofont-rounded-right"></i>
                   </div>
-                );
+            )
               }
-            })()}
           </div>
         </article>
       </section>
     </Layout>
-  );
-};
+  )
+}
 
-export default PostTemplate;
+export default PostTemplate

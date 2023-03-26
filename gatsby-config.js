@@ -1,62 +1,40 @@
+const path = require('path')
+require('dotenv').config({
+  path: `.env.${process.env.NODE_ENV}`
+})
+
 module.exports = {
   siteMetadata: {
     title: 'Come Commune! | ComeCommune',
     description:
-      'Laws unspoken, unbroken and unknown. Come Commune is a blog by Brendan Low where he talks about his life and experience with the world.',
+      'Laws unspoken, unbroken and unknown. Come Commune is a blog by Brendan Low where he talks about his life and experience with the world.'
   },
   plugins: [
     'gatsby-plugin-emotion',
-    `gatsby-plugin-sass`,
+    'gatsby-plugin-sass',
     'gatsby-plugin-react-helmet',
-    'gatsby-transformer-sharp',
+    'gatsby-plugin-image',
     'gatsby-plugin-sharp',
-    `gatsby-plugin-netlify-cms`,
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'assets',
-        path: `${__dirname}/static`,
-      },
-    },
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'articles',
-        path: `${__dirname}/articles`,
-      },
-    },
+    'gatsby-transformer-sharp',
     {
       resolve: 'gatsby-source-filesystem',
       options: {
         name: 'images',
-        path: `${__dirname}/images`,
-      },
+        path: path.join(__dirname, 'static')
+      }
     },
     {
-      resolve: 'gatsby-plugin-mdx',
+      resolve: 'gatsby-source-contentful',
       options: {
-        extensions: [`.mdx`, `.md`],
-        defaultLayouts: {
-          default: require.resolve('./src/components/layout.js'),
-        },
-        gatsbyRemarkPlugins: ['gatsby-remark-relative-images-v2', 'gatsby-remark-images'],
-        plugins: ['gatsby-remark-relative-images-v2', 'gatsby-remark-images'],
-      },
+        spaceId: process.env.CONTENTFUL_SPACE_ID,
+        accessToken: process.env.CONTENTFUL_ACCESS_TOKEN
+      }
     },
     {
-      resolve: 'gatsby-plugin-webpack-bundle-analyzer',
+      resolve: 'gatsby-plugin-disqus',
       options: {
-        production: true,
-        disable: !process.env.ANALYZE_BUNDLE_SIZE,
-        generateStatsFile: true,
-        analyzerMode: 'static',
-      },
-    },
-    {
-      resolve: `gatsby-plugin-disqus`,
-      options: {
-        shortname: `comecommune`,
-      },
-    },
-  ],
-};
+        shortname: 'comecommune'
+      }
+    }
+  ]
+}

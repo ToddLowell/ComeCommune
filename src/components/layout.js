@@ -1,14 +1,14 @@
-import React from 'react';
-import Navbar from './nav.js';
-import Footer from './footer.js';
-import Helmet from 'react-helmet';
-import useSiteMetadata from '../hooks/use-sitemetadata.js';
+import React from 'react'
+import Navbar from './nav.js'
+import Footer from './footer.js'
+import Helmet from 'react-helmet'
+import useSiteMetadata from '../hooks/use-site-metadata.js'
 
-import '../scss/main.scss';
-import '../icofont/icofont.css';
+import '../scss/main.scss'
+import '../icofont/icofont.css'
 
 const Layout = ({ children }) => {
-  const { title, description } = useSiteMetadata();
+  const { title, description } = useSiteMetadata()
 
   return (
     <>
@@ -37,7 +37,7 @@ const Layout = ({ children }) => {
       <main>{children}</main>
       <Footer />
     </>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

@@ -37,37 +37,9 @@ ORDER: base + typography -> general layout + grid -> page layout -> components
   }
 }
 
-// also _utilities
-
 @mixin absCenter {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-.center {
-  @include absCenter;
-}
-
-.center-image {
-  display: block;
-  margin: 0 auto;
-  width: 50%;
-
-  @include respond(phone) {
-    width: 90%;
-  }
-}
-
-.align-center {
-  text-align: center;
-}
-
-.click {
-  cursor: pointer;
-}
-
-.pd-bt-sm {
-  padding-bottom: 2rem;
 }

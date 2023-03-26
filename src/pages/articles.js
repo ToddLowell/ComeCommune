@@ -1,10 +1,10 @@
-import React from 'react';
-import Layout from '../components/layout.js';
-import PostPreview from '../components/post-preview.js';
-import usePosts from '../hooks/use-posts.js';
+import React from 'react'
+import Layout from '../components/layout.js'
+import PostPreview from '../components/post-preview.js'
+import usePosts from '../hooks/use-posts.js'
 
-export default () => {
-  const posts = usePosts();
+const Articles = () => {
+  const posts = usePosts()
 
   return (
     <Layout>
@@ -16,12 +16,13 @@ export default () => {
             {posts
               .sort((a, b) => new Date(b.date) - new Date(a.date))
               .map((post) => (
-                // <pre>{JSON.stringify(post, null, 2)}</pre>
-                <PostPreview key={post.title} post={post} />
+                <PostPreview key={post.slug} post={post} />
               ))}
           </div>
         </div>
       </section>
     </Layout>
-  );
-};
+  )
+}
+
+export default Articles

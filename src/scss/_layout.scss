@@ -1,3 +1,5 @@
+@use 'mixins' as *;
+
 /////////////////////////
 // Landing Page
 .header {
@@ -9,6 +11,10 @@
   // clip-path: polygon(0 0, 100% 0, 100% 90vh, 0 100%);
   @include respond(phone) {
     height: 70vh;
+  }
+
+  &__image {
+    height: 100%;
   }
 
   &__text-box {

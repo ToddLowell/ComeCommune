@@ -1,8 +1,8 @@
-import React from 'react';
-import Layout from '../components/layout.js';
-import Form from '../components/contactForm.js';
+import React from 'react'
+import Layout from '../components/layout.js'
+import Form from '../components/contactForm.js'
 
-export default () => (
+const Contact = () => (
   <Layout>
     <div className="container">
       <section className="section-form">
@@ -18,4 +18,6 @@ export default () => (
       </section>
     </div>
   </Layout>
-);
+)
+
+export default Contact

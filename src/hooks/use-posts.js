@@ -1,50 +1,32 @@
-import { graphql, useStaticQuery } from 'gatsby';
+import { graphql, useStaticQuery } from 'gatsby'
+import { documentToPlainTextString } from '@contentful/rich-text-plain-text-renderer'
 
 const usePosts = () => {
-  // const data = useStaticQuery(graphql`
-  //   query {
-  //     allMdx {
-  //       nodes {
-  //         frontmatter {
-  //           title
-  //           id
-  //           slug
-  //           date
-  //         }
-  //         excerpt(pruneLength: 260)
-  //       }
-  //     }
-  //   }
-  // `);
-
   const data = useStaticQuery(graphql`
-    query {
-      allFile(filter: { sourceInstanceName: { eq: "articles" }, absolutePath: { regex: "/.md/" } }) {
+    {
+      allContentfulArticles {
         nodes {
-          childMdx {
-            frontmatter {
-              title
-              path
-              date
-            }
-            excerpt(pruneLength: 260)
+          title
+          slug
+          publishDate
+          article {
+            raw
           }
         }
       }
     }
-  `);
+  `)
 
-  return data.allFile.nodes.map((postRaw) => {
-    const post = postRaw.childMdx;
+  return data.allContentfulArticles.nodes.map((article) => {
+    const excerpt = documentToPlainTextString(JSON.parse(article.article.raw)).slice(0, 250) + '...'
 
     return {
-      title: post.frontmatter.title,
-      path: post.frontmatter.path,
-      id: post.frontmatter.ID,
-      date: post.frontmatter.date,
-      excerpt: post.excerpt,
-    };
-  });
-};
+      title: article.title,
+      slug: article.slug,
+      date: article.publishDate,
+      excerpt
+    }
+  })
+}
 
-export default usePosts;
+export default usePosts

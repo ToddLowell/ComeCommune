@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { Link } from 'gatsby';
-import { css } from '@emotion/react';
+import React, { Component } from 'react'
+import { Link } from 'gatsby'
+import { css } from '@emotion/react'
 
 class Footer extends Component {
   // When the user clicks on the button, scroll to the top of the document
-  scrollToTop() {
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  scrollToTop () {
+    document.body.scrollTop = 0 // For Safari
+    document.documentElement.scrollTop = 0 // For Chrome, Firefox, IE and Opera
   }
 
-  render() {
+  render () {
     return (
       <footer className="footer">
         <div className="container">
@@ -57,8 +57,8 @@ class Footer extends Component {
           </div>
         </div>
       </footer>
-    );
+    )
   }
 }
 
-export default Footer;
+export default Footer
